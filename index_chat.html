@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Chatapp</title>
+    <style>
+        .name {
+            font-size: 10px;
+        }
+
+        .text {
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <div>
+            <input type="text" id="username"> 
+        </div>
+        <div>
+            <textarea id="text" rows="5"></textarea>
+            <button id="send">send</button>
+        </div>
+        <div id="output"></div>
+    </div>
+    
+
+
+<script src="https://www.gstatic.com/firebasejs/5.7.3/firebase.js"></script>
+<script>
+  // Initialize Firebase
+  var config = {
+    apiKey: "AIzaSyBLg7a6GLrHn3TW21AHnvsY09EF4u3AxnE",
+    authDomain: "chatapp-6a74d.firebaseapp.com",
+    databaseURL: "https://chatapp-6a74d.firebaseio.com",
+    projectId: "chatapp-6a74d",
+    storageBucket: "",
+    messagingSenderId: "272341248547"
+  };
+  firebase.initializeApp(config);
+
+  //Msg送信準備
+const newPostRef = firebase.database();
+let room = 'room1';
+
+const send = document.getElementById('send');
+const username = document.getElementById('username');
+const text = document.getElementById('text');
+const output = document.getElementById('output');
+
+  //Msg送信処理
+send.addEventListener('click' , function() {
+    newPostRef.ref(room).push({
+        username: username.value,
+        text: text.value
+    });
+    text.value = "";
+});
+//Msg受信処理
+newPostRef.ref(room).on('child_added' , function(data) {
+    const v = data.val();
+    const k = data.key;
+    let str ="";
+    str += '<div class="name">' + v.username + '</div>';
+    str += '<div class="text">' + v.text + '</div>';
+    output.innerHTML += str;
+});
+
+</script>
+</body>
+</html>
